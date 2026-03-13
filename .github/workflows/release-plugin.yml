@@ -1,0 +1,62 @@
+name: Release Plugin
+
+on:
+  push:
+    tags:
+      - "forja-plugin-*-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract plugin info from tag
+        id: info
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          # Tag format: forja-plugin-<name>-v<version>
+          VERSION="${TAG##*-v}"
+          PLUGIN_NAME="${TAG%-v*}"
+          PLUGIN_DIR="plugins/${PLUGIN_NAME}"
+
+          if [[ ! -d "$PLUGIN_DIR" ]]; then
+            echo "::error::Plugin directory not found: $PLUGIN_DIR"
+            exit 1
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "plugin_name=$PLUGIN_NAME" >> "$GITHUB_OUTPUT"
+          echo "plugin_dir=$PLUGIN_DIR" >> "$GITHUB_OUTPUT"
+          echo "tarball=${PLUGIN_NAME}-${VERSION}.tar.gz" >> "$GITHUB_OUTPUT"
+
+      - name: Package plugin
+        run: |
+          mkdir -p dist
+          tar -czf "dist/${{ steps.info.outputs.tarball }}" \
+            -C plugins "${{ steps.info.outputs.plugin_name }}"
+
+      - name: Compute SHA256
+        id: sha
+        run: |
+          SHA=$(sha256sum "dist/${{ steps.info.outputs.tarball }}" | cut -d' ' -f1)
+          echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.info.outputs.tag }}
+          name: "${{ steps.info.outputs.plugin_name }} v${{ steps.info.outputs.version }}"
+          body: |
+            ## ${{ steps.info.outputs.plugin_name }} v${{ steps.info.outputs.version }}
+
+            **SHA256:** `${{ steps.sha.outputs.sha256 }}`
+
+            ### Install
+            Download the `.tar.gz` asset below or install via Forja's plugin manager.
+          files: dist/${{ steps.info.outputs.tarball }}
+          make_latest: false
