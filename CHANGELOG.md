@@ -8,6 +8,12 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.0.6] - 2026-03-13
+
+### Fixed
+- Checkout default branch before pushing registry update.
+---
+
 ## [1.0.5] - 2026-03-13
 
 ### Fixed
