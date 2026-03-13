@@ -1,12 +1,9 @@
 name: Release Plugins
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Version to release (e.g., 1.0.2)"
-        required: true
-        type: string
+  push:
+    tags:
+      - "v*.*.*"
 
 permissions:
   contents: write
@@ -21,38 +18,24 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Validate version
+      - name: Extract version from tag
+        id: version
         run: |
-          if [[ ! "${{ inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::Invalid semver version: ${{ inputs.version }}"
+          VERSION="${GITHUB_REF_NAME#v}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid semver version from tag: $VERSION"
             exit 1
           fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Validate plugins
         run: node scripts/validate-plugins.mjs
 
-      - name: Bump versions
-        run: |
-          VERSION="${{ inputs.version }}"
-
-          # Update package.json
-          jq --arg v "$VERSION" '.version = $v' package.json > package.json.tmp
-          mv package.json.tmp package.json
-
-          # Update all plugin manifests
-          for manifest in plugins/*/manifest.json; do
-            jq --arg v "$VERSION" '.version = $v' "$manifest" > "$manifest.tmp"
-            mv "$manifest.tmp" "$manifest"
-            echo "Bumped: $manifest -> $VERSION"
-          done
-
       - name: Package plugins
-        id: package
         run: |
-          VERSION="${{ inputs.version }}"
+          VERSION="${{ steps.version.outputs.version }}"
           mkdir -p dist
 
-          PLUGINS=""
           for dir in plugins/*/; do
             name=$(basename "$dir")
             manifest="$dir/manifest.json"
@@ -68,10 +51,7 @@ jobs:
             size=$(du -h "dist/$tarball" | cut -f1)
 
             echo "Packaged: $tarball ($size, sha256: $sha256)"
-            PLUGINS="${PLUGINS}${name},"
           done
-
-          echo "plugins=${PLUGINS%,}" >> "$GITHUB_OUTPUT"
 
       - name: Rebuild registry with SHA256
         run: node scripts/build-registry.mjs
@@ -80,7 +60,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ inputs.version }}"
+          VERSION="${{ steps.version.outputs.version }}"
 
           for dir in plugins/*/; do
             name=$(basename "$dir")
@@ -102,28 +82,29 @@ jobs:
               gh release create "$tag" \
                 "$tarball" \
                 --title "${name} v${VERSION}" \
-                --notes "$(cat <<EOF
-          ## ${name} v${VERSION}
+                --notes "## ${name} v${VERSION}
 
-          **SHA256:** \`${sha256}\`
+**SHA256:** \`${sha256}\`
 
-          ### Install
-          Download the \`.tar.gz\` asset below or install via Forja's plugin marketplace.
-          EOF
-          )" \
+### Install
+Download the \`.tar.gz\` asset below or install via Forja's plugin marketplace." \
                 --latest=false
             fi
 
             echo "Released: $tag"
           done
 
-      - name: Commit updated versions and registry
+      - name: Update registry on default branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          git add package.json plugins/*/manifest.json public/registry.json
-          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git add public/registry.json
+          git diff --cached --quiet && echo "Registry unchanged, skipping" && exit 0
 
-          git commit -m "chore: release plugins v${{ inputs.version }}"
-          git push
+          git commit -m "chore: update registry with SHA256 for v${{ steps.version.outputs.version }}"
+
+          DEFAULT_BRANCH=$(gh repo view --json defaultBranch -q .defaultBranch)
+          git push origin HEAD:"$DEFAULT_BRANCH"
