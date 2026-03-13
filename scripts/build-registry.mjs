@@ -13,7 +13,7 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const PLUGINS_DIR = join(import.meta.dirname, "..", "plugins");
-const REGISTRY_PATH = join(import.meta.dirname, "..", "registry.json");
+const REGISTRY_PATH = join(import.meta.dirname, "..", "public", "registry.json");
 const GITHUB_REPO = "nandomoreirame/forja-plugins";
 
 async function buildRegistry() {
