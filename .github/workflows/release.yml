@@ -115,10 +115,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          # Save the updated registry built from tarballs
+          cp public/registry.json /tmp/registry.json
+
+          # Checkout the default branch (tag checkout is detached HEAD)
+          DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
+          git fetch origin "$DEFAULT_BRANCH"
+          git checkout "$DEFAULT_BRANCH"
+
+          # Apply the updated registry
+          cp /tmp/registry.json public/registry.json
+
           git add public/registry.json
           git diff --cached --quiet && echo "Registry unchanged, skipping" && exit 0
 
           git commit -m "chore: update registry with SHA256 for v${{ steps.version.outputs.version }}"
-
-          DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
-          git push origin HEAD:"$DEFAULT_BRANCH"
+          git push origin "$DEFAULT_BRANCH"
