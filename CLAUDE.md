@@ -111,7 +111,9 @@ All plugins MUST share the same version. When executing a git-flow release (`rel
 - `package.json` (root)
 - `plugins/forja-plugin-*/manifest.json` (all plugins)
 
-If using the `release-plugin.sh` script, this is handled automatically. If using the `git-flow` skill directly, Claude must update the manifest files manually before finishing the release.
+After updating all versions, always run `pnpm run build:registry` to regenerate `public/registry.json` with the new version before committing.
+
+If using the `release-plugin.sh` script, this is handled automatically. If using the `git-flow` skill directly, Claude must update the manifest files and rebuild the registry manually before finishing the release.
 
 ## Creating a new plugin
 
