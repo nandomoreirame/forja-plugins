@@ -1,0 +1,12 @@
+{
+  "name": "forja-plugins",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Official plugin registry for Forja",
+  "author": "Forja Team",
+  "license": "MIT",
+  "scripts": {
+    "build:registry": "node scripts/build-registry.mjs",
+    "validate": "node scripts/validate-plugins.mjs"
+  }
+}
