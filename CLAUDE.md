@@ -103,6 +103,16 @@ Never hardcode colors. Listen to `theme-changed` event for dynamic updates.
 Plugins are packaged as `.tar.gz` and published via GitHub Releases. The registry references download URLs in the format:
 `https://github.com/nandomoreirame/forja-plugins/releases/download/{name}-v{version}/{name}-{version}.tar.gz`
 
+## Version Sync (MANDATORY)
+
+All plugins MUST share the same version. When executing a git-flow release (`release.sh start`), the version in `package.json` is updated automatically by the script, but **Claude MUST also update the `version` field in every `plugins/*/manifest.json`** to match the release version. This keeps all files in sync.
+
+**Files to update on every release:**
+- `package.json` (root)
+- `plugins/forja-plugin-*/manifest.json` (all plugins)
+
+If using the `release-plugin.sh` script, this is handled automatically. If using the `git-flow` skill directly, Claude must update the manifest files manually before finishing the release.
+
 ## Creating a new plugin
 
 1. Create `plugins/forja-plugin-<name>/` with `manifest.json` and `index.html`
