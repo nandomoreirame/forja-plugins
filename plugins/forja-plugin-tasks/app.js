@@ -1,5 +1,5 @@
 // =============================================
-// Forja Plugin: Tasks
+// Forja Plugin: Markdown Tasks
 // Manages project tasks from a TASKS.md file.
 //
 // Theme integration is handled automatically by Forja's PluginHost.
@@ -913,7 +913,7 @@
         }
       })
       .catch(function (err) {
-        console.error("[Tasks] getActive error:", err);
+        console.error("[Markdown Tasks] getActive error:", err);
         render();
       });
 
@@ -923,7 +923,7 @@
       loadFile();
     });
   } else {
-    console.warn("[Tasks] forja API not available");
+    console.warn("[Markdown Tasks] forja API not available");
     render();
   }
 })();
