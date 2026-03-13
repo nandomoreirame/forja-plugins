@@ -120,5 +120,5 @@ jobs:
 
           git commit -m "chore: update registry with SHA256 for v${{ steps.version.outputs.version }}"
 
-          DEFAULT_BRANCH=$(gh repo view --json defaultBranch -q .defaultBranch)
+          DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
           git push origin HEAD:"$DEFAULT_BRANCH"
