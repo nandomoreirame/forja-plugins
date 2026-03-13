@@ -10,8 +10,19 @@ Plugin registry and monorepo for the **Forja IDE**. Contains official plugins (v
 
 ```bash
 pnpm run validate         # Validate all plugin manifests (name, version, entry, structure)
-pnpm run build:registry   # Generate registry.json from plugin manifests
+pnpm run build:registry   # Generate public/registry.json from plugin manifests
 ```
+
+### Releasing
+
+All plugins share one version (synced across `package.json` and every `manifest.json`).
+
+```bash
+./scripts/release-plugin.sh <version>            # Bump, package, and release all plugins
+./scripts/release-plugin.sh <version> --dry-run   # Preview without creating releases
+```
+
+The CI workflow `.github/workflows/release-plugin.yml` also creates releases automatically on tag push matching `forja-plugin-*-v*`.
 
 There are no tests, no linter, and no build step for plugins themselves. Plugins are plain HTML/CSS/JS.
 
@@ -26,10 +37,13 @@ plugins/                  # Each subdirectory is an independent plugin
     styles.css            # Styling (MUST use --forja-* CSS variables, no hardcoded colors)
 
 scripts/
-  validate-plugins.mjs   # Checks manifests: required fields, kebab-case name, semver, entry exists
-  build-registry.mjs      # Reads manifests -> outputs registry.json with download URLs
+  validate-plugins.mjs    # Checks manifests: required fields, kebab-case name, semver, entry exists
+  build-registry.mjs      # Reads manifests -> outputs public/registry.json with download URLs
+  release-plugin.sh       # Bump version, package all plugins, create GitHub Releases
 
-registry.json             # Generated file (run build:registry). Do not edit manually.
+public/
+  index.html              # Marketplace landing page (deployed via GitHub Pages)
+  registry.json           # Generated file (run build:registry). Do not edit manually.
 ```
 
 ### Plugin manifest schema
