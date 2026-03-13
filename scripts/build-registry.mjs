@@ -9,12 +9,23 @@
  * that can be served via GitHub Pages.
  */
 
+import { createHash } from "node:crypto";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 const PLUGINS_DIR = join(import.meta.dirname, "..", "plugins");
+const DIST_DIR = join(import.meta.dirname, "..", "dist");
 const REGISTRY_PATH = join(import.meta.dirname, "..", "public", "registry.json");
 const GITHUB_REPO = "nandomoreirame/forja-plugins";
+
+async function computeSha256(filePath) {
+  try {
+    const data = await readFile(filePath);
+    return createHash("sha256").update(data).digest("hex");
+  } catch {
+    return "";
+  }
+}
 
 async function buildRegistry() {
   const entries = await readdir(PLUGINS_DIR, { withFileTypes: true });
@@ -28,6 +39,10 @@ async function buildRegistry() {
       const raw = await readFile(manifestPath, "utf-8");
       const manifest = JSON.parse(raw);
 
+      const tarball = `${manifest.name}-${manifest.version}.tar.gz`;
+      const tarballPath = join(DIST_DIR, tarball);
+      const sha256 = await computeSha256(tarballPath);
+
       plugins.push({
         name: manifest.name,
         displayName: manifest.displayName,
@@ -40,8 +55,12 @@ async function buildRegistry() {
         minForjaVersion: manifest.minForjaVersion || "1.0.0",
         permissions: manifest.permissions || [],
         downloadUrl: `https://github.com/${GITHUB_REPO}/releases/download/${manifest.name}-v${manifest.version}/${manifest.name}-${manifest.version}.tar.gz`,
-        sha256: "",
+        sha256,
       });
+
+      if (sha256) {
+        console.log(`    sha256: ${sha256}`);
+      }
 
       console.log(`  + ${manifest.name}@${manifest.version}`);
     } catch (err) {
