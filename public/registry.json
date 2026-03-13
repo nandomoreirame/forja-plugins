@@ -19,7 +19,7 @@
         "notifications"
       ],
       "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-pomodoro-v1.0.6/forja-plugin-pomodoro-1.0.6.tar.gz",
-      "sha256": ""
+      "sha256": "a008692097da1d467fdf2707501f192078504e26e87bf41171d4b3290a626037"
     },
     {
       "name": "forja-plugin-tasks",
@@ -41,7 +41,7 @@
         "fs.write"
       ],
       "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-tasks-v1.0.6/forja-plugin-tasks-1.0.6.tar.gz",
-      "sha256": ""
+      "sha256": "35575290c747b8b367733cf49b2990aef36f51d62724e17b485d58f135b4d0de"
     }
   ]
 }
