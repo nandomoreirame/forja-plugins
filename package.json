@@ -7,6 +7,11 @@
   "license": "MIT",
   "scripts": {
     "build:registry": "node scripts/build-registry.mjs",
-    "validate": "node scripts/validate-plugins.mjs"
+    "validate": "node scripts/validate-plugins.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.0"
   }
 }
