@@ -3,26 +3,35 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+    paths:
+      - "public/**"
+      - "!public/registry.json"
   workflow_dispatch:
 
 permissions:
-  pages: write
-  id-token: write
-
-concurrency:
-  group: pages
-  cancel-in-progress: false
+  contents: write
 
 jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: public
-      - id: deployment
-        uses: actions/deploy-pages@v4
+
+      - name: Deploy static files to gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin gh-pages
+          git checkout gh-pages
+
+          # Bring static assets from main (excluding registry.json)
+          git checkout main -- public/index.html public/favicon.png public/favicon.svg
+          cp public/* . 2>/dev/null || true
+          rm -rf public
+
+          git add -A
+          git diff --cached --quiet && echo "No changes to deploy" && exit 0
+
+          git commit -m "chore: sync static assets from main"
+          git push origin gh-pages

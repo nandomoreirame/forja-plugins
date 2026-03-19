@@ -118,7 +118,31 @@ jobs:
             echo "Released: $tag"
           done
 
-      - name: Update registry on default branch
+      - name: Update registry on gh-pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Save artifacts built during release
+          cp public/registry.json /tmp/registry.json
+          for manifest in plugins/*/manifest.json; do
+            cp "$manifest" "/tmp/$(echo "$manifest" | tr '/' '_')"
+          done
+
+          # Push registry.json to gh-pages
+          git fetch origin gh-pages
+          git checkout gh-pages
+          cp /tmp/registry.json registry.json
+
+          git add registry.json
+          git diff --cached --quiet && echo "Registry unchanged" && exit 0
+
+          git commit -m "chore: update registry for v$VERSION"
+          git push origin gh-pages
+
+      - name: Sync manifest versions to main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -127,21 +151,12 @@ jobs:
 
           VERSION="${{ steps.version.outputs.version }}"
 
-          # Save updated files built during release
-          cp public/registry.json /tmp/registry.json
-          for manifest in plugins/*/manifest.json; do
-            cp "$manifest" "/tmp/$(echo "$manifest" | tr '/' '_')"
-          done
-
-          # Checkout the default branch (tag checkout is detached HEAD)
+          # Checkout main (tag checkout is detached HEAD)
           DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
           git fetch origin "$DEFAULT_BRANCH"
           git checkout -f "$DEFAULT_BRANCH"
 
-          # Apply updated registry
-          cp /tmp/registry.json public/registry.json
-
-          # Apply updated manifests
+          # Restore updated manifests
           for manifest in plugins/*/manifest.json; do
             tmp="/tmp/$(echo "$manifest" | tr '/' '_')"
             if [[ -f "$tmp" ]]; then
@@ -149,8 +164,8 @@ jobs:
             fi
           done
 
-          git add public/registry.json plugins/*/manifest.json
-          git diff --cached --quiet && echo "No changes to commit, skipping" && exit 0
+          git add plugins/*/manifest.json
+          git diff --cached --quiet && echo "No manifest changes to sync" && exit 0
 
-          git commit -m "chore(release): sync manifests and registry to v${VERSION}"
+          git commit -m "chore(release): sync manifests to v${VERSION}"
           git push origin "$DEFAULT_BRANCH"
