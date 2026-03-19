@@ -2,6 +2,32 @@
   "version": 1,
   "plugins": [
     {
+      "name": "forja-plugin-git",
+      "displayName": "Git Manager",
+      "description": "Visual branch graph, commit history, diff viewer, and branch management for your Git repositories.",
+      "version": "1.0.6",
+      "author": "Forja Team",
+      "icon": "GitBranch",
+      "tags": [
+        "git",
+        "version-control",
+        "developer-tools"
+      ],
+      "downloads": 0,
+      "minForjaVersion": "1.6.0",
+      "permissions": [
+        "project.active",
+        "theme.current",
+        "git.status",
+        "git.log",
+        "git.diff",
+        "notifications",
+        "terminal.execute"
+      ],
+      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-git-v1.0.6/forja-plugin-git-1.0.6.tar.gz",
+      "sha256": ""
+    },
+    {
       "name": "forja-plugin-pomodoro",
       "displayName": "Pomodoro Timer",
       "description": "A Pomodoro timer to track your focus sessions while coding.",
