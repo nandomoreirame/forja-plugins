@@ -8,6 +8,13 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.0.7] - 2026-03-19
+
+### Added
+- Add favicon assets.
+- Add git manager plugin with visual branch graph.
+---
+
 ## [1.0.6] - 2026-03-13
 
 ### Fixed
