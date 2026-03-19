@@ -45,6 +45,16 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "Resolved version: $VERSION"
 
+      - name: Sync manifest versions
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          for manifest in plugins/*/manifest.json; do
+            if [[ -f "$manifest" ]]; then
+              jq --arg v "$VERSION" '.version = $v' "$manifest" > "${manifest}.tmp" && mv "${manifest}.tmp" "$manifest"
+              echo "Updated: $manifest -> $VERSION"
+            fi
+          done
+
       - name: Validate plugins
         run: node scripts/validate-plugins.mjs
 
@@ -115,19 +125,32 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Save the updated registry built from tarballs
+          VERSION="${{ steps.version.outputs.version }}"
+
+          # Save updated files built during release
           cp public/registry.json /tmp/registry.json
+          for manifest in plugins/*/manifest.json; do
+            cp "$manifest" "/tmp/$(echo "$manifest" | tr '/' '_')"
+          done
 
           # Checkout the default branch (tag checkout is detached HEAD)
           DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
           git fetch origin "$DEFAULT_BRANCH"
           git checkout -f "$DEFAULT_BRANCH"
 
-          # Apply the updated registry
+          # Apply updated registry
           cp /tmp/registry.json public/registry.json
 
-          git add public/registry.json
-          git diff --cached --quiet && echo "Registry unchanged, skipping" && exit 0
+          # Apply updated manifests
+          for manifest in plugins/*/manifest.json; do
+            tmp="/tmp/$(echo "$manifest" | tr '/' '_')"
+            if [[ -f "$tmp" ]]; then
+              cp "$tmp" "$manifest"
+            fi
+          done
 
-          git commit -m "chore: update registry with SHA256 for v${{ steps.version.outputs.version }}"
+          git add public/registry.json plugins/*/manifest.json
+          git diff --cached --quiet && echo "No changes to commit, skipping" && exit 0
+
+          git commit -m "chore(release): sync manifests and registry to v${VERSION}"
           git push origin "$DEFAULT_BRANCH"
