@@ -22,9 +22,9 @@ jobs:
       startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "22"
 
@@ -121,7 +121,7 @@ jobs:
           # Checkout the default branch (tag checkout is detached HEAD)
           DEFAULT_BRANCH=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
           git fetch origin "$DEFAULT_BRANCH"
-          git checkout "$DEFAULT_BRANCH"
+          git checkout -f "$DEFAULT_BRANCH"
 
           # Apply the updated registry
           cp /tmp/registry.json public/registry.json
