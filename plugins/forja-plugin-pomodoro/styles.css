@@ -118,7 +118,7 @@ body {
 }
 
 .timer-display {
-  font-size: 76px;
+  font-size: clamp(80px, 15vw, 200px);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   letter-spacing: -3px;

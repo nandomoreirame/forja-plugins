@@ -3,18 +3,11 @@
   "version": "1.0.6",
   "displayName": "Markdown Tasks",
   "description": "Manage project tasks from a TASKS.md file. Each project has its own task list.",
+  "scope": "project",
   "author": "Forja Team",
   "icon": "ListTodo",
   "entry": "index.html",
-  "tags": [
-    "productivity",
-    "project-management"
-  ],
-  "permissions": [
-    "project.active",
-    "theme.current",
-    "fs.read",
-    "fs.write"
-  ],
+  "tags": ["productivity", "project-management"],
+  "permissions": ["project.active", "theme.current", "fs.read", "fs.write"],
   "minForjaVersion": "1.6.0"
 }
