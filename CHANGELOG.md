@@ -8,6 +8,19 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.0.8] - 2026-03-24
+
+### Added
+- Add create file button and inline markdown rendering.
+
+### Changed
+- Move registry.json to gh-pages branch.
+
+### Fixed
+- Sync manifest versions before packaging plugins.
+- Force checkout on release and upgrade actions to v6.
+---
+
 ## [1.0.6] - 2026-03-13
 
 ### Fixed
