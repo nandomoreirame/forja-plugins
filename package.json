@@ -1,6 +1,6 @@
 {
   "name": "forja-plugins",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "description": "Official plugin registry for Forja",
   "author": "Forja Team",
