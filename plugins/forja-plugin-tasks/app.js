@@ -39,6 +39,7 @@
   var noProjectState = document.getElementById("no-project-state");
   var noFileState = document.getElementById("no-file-state");
   var createFileBtn = document.getElementById("create-file-btn");
+  var reloadBtn = document.getElementById("reload-btn");
   var emptyState = document.getElementById("empty-state");
   var loadingState = document.getElementById("loading-state");
   var taskListEl = document.getElementById("task-list");
@@ -482,6 +483,7 @@
     emptyState.style.display = hasProject && !state.loading && hasFile && !hasTasks ? "" : "none";
     taskListEl.style.display = hasProject && !state.loading && hasFile ? "" : "none";
     addFormEl.style.display = hasProject && !state.loading && hasFile ? "" : "none";
+    reloadBtn.style.display = hasProject && hasFile ? "" : "none";
 
     // Task list
     taskListEl.innerHTML = "";
@@ -942,6 +944,16 @@
 
   if (createFileBtn) {
     createFileBtn.addEventListener("click", createTasksFile);
+  }
+
+  if (reloadBtn) {
+    reloadBtn.addEventListener("click", function () {
+      reloadBtn.classList.add("spinning");
+      loadFile();
+      setTimeout(function () {
+        reloadBtn.classList.remove("spinning");
+      }, 500);
+    });
   }
 
   // --- Event Handlers ---

@@ -7,7 +7,7 @@
 
 :root {
   --radius: 6px;
-  --task-item-padding: 8px 10px;
+  --task-item-padding: 4px 10px;
   --section-gap: 24px;
 }
 
@@ -76,6 +76,40 @@ body {
 .plugin-subtitle {
   font-size: 11px;
   color: var(--forja-text-muted);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--forja-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.icon-btn:hover {
+  color: var(--forja-text);
+  background: var(--forja-bg-surface);
+}
+
+.icon-btn.spinning svg {
+  animation: spin 0.5s ease;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .stats-badge {
@@ -189,6 +223,12 @@ body {
   padding: 0 2px;
   margin-bottom: 8px;
   cursor: grab;
+  position: relative;
+  transition: transform 0.15s ease;
+}
+
+.section-header:hover {
+  transform: translateX(16px);
 }
 
 .section-header:active {
@@ -206,8 +246,11 @@ body {
   height: 14px;
   opacity: 0;
   transition: opacity 0.1s ease;
-  margin-right: 4px;
   color: var(--forja-text-muted);
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .section-drag-handle::before {
@@ -291,15 +334,18 @@ body {
   align-items: flex-start;
   gap: 8px;
   padding: var(--task-item-padding);
+  padding-left: 2px;
   border-radius: var(--radius);
-  transition: background 0.1s ease, opacity 0.15s ease, border-color 0.1s ease;
+  transition: background 0.1s ease, opacity 0.15s ease, border-color 0.1s ease, transform 0.15s ease;
   border: 2px solid transparent;
   cursor: default;
   min-height: 36px;
+  position: relative;
 }
 
 .task-item:hover {
   background: var(--forja-bg-surface);
+  transform: translateX(16px);
 }
 
 /* Drag handle */
@@ -314,8 +360,10 @@ body {
   cursor: grab;
   opacity: 0;
   transition: opacity 0.1s ease, color 0.1s ease;
-  margin-top: 1px;
   color: var(--forja-text-sub);
+  position: absolute;
+  left: -16px;
+  top: 5px;
 }
 
 .drag-handle::before {
@@ -487,12 +535,14 @@ body.is-dragging-task .section-drop-zone {
   border-radius: 3px;
   padding: 1px 2px;
   margin-left: -2px;
-  opacity: 0;
-  transition: opacity 0.1s ease, background 0.1s ease;
   font-style: italic;
+  display: none;
+  opacity: 0;
+  animation: fade-slide-in 0.15s ease forwards;
 }
 
 .task-item:hover .task-description-placeholder {
+  display: block;
   opacity: 0.5;
 }
 
@@ -503,6 +553,17 @@ body.is-dragging-task .section-drop-zone {
 
 .task-item.completed .task-description-placeholder {
   display: none;
+}
+
+@keyframes fade-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 0.5;
+    transform: translateY(0);
+  }
 }
 
 /* --- Inline Markdown --- */

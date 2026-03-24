@@ -11,9 +11,19 @@
     <header class="plugin-header">
       <div class="header-top">
         <h2 class="plugin-title">Markdown Tasks</h2>
-        <div id="stats" class="stats-badge">
-          <div id="stats-progress" class="progress-bar"><div id="stats-progress-fill" class="progress-fill"></div></div>
-          <span id="stats-text"></span>
+        <div class="header-actions">
+          <div id="stats" class="stats-badge">
+            <div id="stats-progress" class="progress-bar"><div id="stats-progress-fill" class="progress-fill"></div></div>
+            <span id="stats-text"></span>
+          </div>
+          <button id="reload-btn" class="icon-btn" type="button" title="Reload TASKS.md" aria-label="Reload tasks" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+              <path d="M21 21v-5h-5"/>
+            </svg>
+          </button>
         </div>
       </div>
       <span id="project-name" class="plugin-subtitle">No project</span>
