@@ -18,6 +18,7 @@
     projectName: null,
     sections: [], // [{ title: string|null, tasks: [{ title, description, done }] }]
     loading: false,
+    fileExists: false,
   };
 
   var saveTimer = null;
@@ -36,6 +37,8 @@
   var statsTextEl = document.getElementById("stats-text");
   var statsProgressFill = document.getElementById("stats-progress-fill");
   var noProjectState = document.getElementById("no-project-state");
+  var noFileState = document.getElementById("no-file-state");
+  var createFileBtn = document.getElementById("create-file-btn");
   var emptyState = document.getElementById("empty-state");
   var loadingState = document.getElementById("loading-state");
   var taskListEl = document.getElementById("task-list");
@@ -115,6 +118,31 @@
     }
 
     return lines.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
+  }
+
+  // --- Inline Markdown Rendering ---
+  function escapeHtml(text) {
+    var div = document.createElement("div");
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+  }
+
+  function renderInlineMarkdown(text) {
+    var html = escapeHtml(text);
+
+    // Links: [text](url)
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+
+    // Bold: **text**
+    html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+
+    // Italic: *text*
+    html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
+
+    // Inline code: `text`
+    html = html.replace(/`([^`]+)`/g, "<code>$1</code>");
+
+    return html;
   }
 
   // --- Inline Editing ---
@@ -446,12 +474,14 @@
     // Visibility
     var hasProject = !!state.projectPath;
     var hasTasks = total > 0;
+    var hasFile = state.fileExists;
 
     noProjectState.style.display = !hasProject ? "" : "none";
     loadingState.style.display = hasProject && state.loading ? "" : "none";
-    emptyState.style.display = hasProject && !state.loading && !hasTasks ? "" : "none";
-    taskListEl.style.display = hasProject && !state.loading ? "" : "none";
-    addFormEl.style.display = hasProject && !state.loading ? "" : "none";
+    noFileState.style.display = hasProject && !state.loading && !hasFile ? "" : "none";
+    emptyState.style.display = hasProject && !state.loading && hasFile && !hasTasks ? "" : "none";
+    taskListEl.style.display = hasProject && !state.loading && hasFile ? "" : "none";
+    addFormEl.style.display = hasProject && !state.loading && hasFile ? "" : "none";
 
     // Task list
     taskListEl.innerHTML = "";
@@ -688,9 +718,10 @@
 
     var titleEl = document.createElement("div");
     titleEl.className = "task-title";
-    titleEl.textContent = task.title;
+    titleEl.innerHTML = renderInlineMarkdown(task.title);
     titleEl.title = "Click to edit";
-    titleEl.addEventListener("click", function () {
+    titleEl.addEventListener("click", function (e) {
+      if (e.target.tagName === "A") return;
       if (!task.done) {
         makeEditable(titleEl, sectionIndex, taskIndex, "title");
       }
@@ -700,9 +731,10 @@
     if (task.description) {
       var descEl = document.createElement("div");
       descEl.className = "task-description";
-      descEl.textContent = task.description;
+      descEl.innerHTML = renderInlineMarkdown(task.description);
       descEl.title = "Click to edit";
-      descEl.addEventListener("click", function () {
+      descEl.addEventListener("click", function (e) {
+        if (e.target.tagName === "A") return;
         if (!task.done) {
           makeEditable(descEl, sectionIndex, taskIndex, "description");
         }
@@ -877,16 +909,39 @@
     forja.fs
       .readFile(FILENAME)
       .then(function (content) {
+        state.fileExists = true;
         state.sections = parseMarkdown(content || "");
         state.loading = false;
         render();
       })
       .catch(function () {
-        // File doesn't exist yet - start fresh
+        // File doesn't exist yet
+        state.fileExists = false;
         state.sections = [];
         state.loading = false;
         render();
       });
+  }
+
+  // --- Create File ---
+  function createTasksFile() {
+    if (!state.projectPath || typeof forja === "undefined") return;
+
+    var initialContent = "# TASKS.md\n";
+    forja.fs
+      .writeFile(FILENAME, initialContent)
+      .then(function () {
+        state.fileExists = true;
+        state.sections = parseMarkdown(initialContent);
+        render();
+      })
+      .catch(function (err) {
+        console.error("Failed to create TASKS.md:", err);
+      });
+  }
+
+  if (createFileBtn) {
+    createFileBtn.addEventListener("click", createTasksFile);
   }
 
   // --- Event Handlers ---

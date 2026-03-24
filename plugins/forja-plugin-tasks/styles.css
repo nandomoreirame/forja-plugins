@@ -114,6 +114,11 @@ body {
 .empty-state {
   text-align: center;
   padding: 32px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .empty-icon {
@@ -132,6 +137,13 @@ body {
 .empty-description {
   font-size: 11px;
   color: var(--forja-text-muted);
+}
+
+.btn.btn-primary.btn-create-file {
+  margin-top: 12px;
+  padding: 8px 20px;
+  font-size: 12px;
+  color: #fff;
 }
 
 /* --- Task List --- */
@@ -491,6 +503,39 @@ body.is-dragging-task .section-drop-zone {
 
 .task-item.completed .task-description-placeholder {
   display: none;
+}
+
+/* --- Inline Markdown --- */
+
+.task-title a,
+.task-description a {
+  color: var(--forja-accent);
+  text-decoration: none;
+}
+
+.task-title a:hover,
+.task-description a:hover {
+  text-decoration: underline;
+}
+
+.task-title code,
+.task-description code {
+  font-family: "Geist Mono", "JetBrains Mono", "Fira Code", monospace;
+  font-size: 0.9em;
+  background: var(--forja-bg-overlay);
+  padding: 1px 4px;
+  border-radius: 3px;
+  color: var(--forja-text-sub);
+}
+
+.task-title strong,
+.task-description strong {
+  font-weight: 600;
+  color: var(--forja-text);
+}
+
+.task-description em {
+  font-style: italic;
 }
 
 /* --- Inline Editing --- */
