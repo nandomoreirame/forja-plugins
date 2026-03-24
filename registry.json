@@ -5,7 +5,7 @@
       "name": "forja-plugin-pomodoro",
       "displayName": "Pomodoro Timer",
       "description": "A Pomodoro timer to track your focus sessions while coding.",
-      "version": "1.0.8",
+      "version": "1.0.9",
       "author": "Forja Team",
       "icon": "Timer",
       "tags": [
@@ -18,14 +18,14 @@
         "theme.current",
         "notifications"
       ],
-      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-pomodoro-v1.0.8/forja-plugin-pomodoro-1.0.8.tar.gz",
-      "sha256": "7c08ed07d9a1970c8215d824fcc9618561eb2546c373306f3523e9f8dbcb48a4"
+      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-pomodoro-v1.0.9/forja-plugin-pomodoro-1.0.9.tar.gz",
+      "sha256": "548cf5a0603ab8db82666aa621487356d6f3bb15d5bb91f8926563049714e78a"
     },
     {
       "name": "forja-plugin-tasks",
       "displayName": "Markdown Tasks",
       "description": "Manage project tasks from a TASKS.md file. Each project has its own task list.",
-      "version": "1.0.8",
+      "version": "1.0.9",
       "author": "Forja Team",
       "icon": "ListTodo",
       "tags": [
@@ -40,8 +40,8 @@
         "fs.read",
         "fs.write"
       ],
-      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-tasks-v1.0.8/forja-plugin-tasks-1.0.8.tar.gz",
-      "sha256": "75c08718a0b9e7e313a4b5e2a8caf42418d6fba5c1661d303b349216ba01dd44"
+      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-tasks-v1.0.9/forja-plugin-tasks-1.0.9.tar.gz",
+      "sha256": "c5e7ffe8b399376987b34d882584688e5029b649eccbac0d39ce2d74b8273dc2"
     }
   ]
 }
