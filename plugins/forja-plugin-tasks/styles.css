@@ -71,6 +71,15 @@ body {
   font-weight: 600;
   color: var(--forja-text);
   margin-bottom: 2px;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 0 4px;
+  margin: 0 -4px 2px;
+  transition: background 0.1s ease;
+}
+
+.plugin-title:hover {
+  background: var(--forja-bg-surface);
 }
 
 .plugin-subtitle {
@@ -220,20 +229,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 2px;
+  padding: 0 2px 0 18px;
   margin-bottom: 8px;
-  cursor: grab;
+  cursor: default;
   position: relative;
-  transition: transform 0.15s ease;
 }
 
-.section-header:hover {
-  transform: translateX(16px);
-}
-
-.section-header:active {
-  cursor: grabbing;
-}
 
 /* Section drag handle */
 
@@ -247,10 +248,15 @@ body {
   opacity: 0;
   transition: opacity 0.1s ease;
   color: var(--forja-text-muted);
+  cursor: grab;
   position: absolute;
-  left: -14px;
+  left: 2px;
   top: 50%;
   transform: translateY(-50%);
+}
+
+.section-drag-handle:active {
+  cursor: grabbing;
 }
 
 .section-drag-handle::before {
@@ -334,9 +340,9 @@ body {
   align-items: flex-start;
   gap: 8px;
   padding: var(--task-item-padding);
-  padding-left: 2px;
+  padding-left: 22px;
   border-radius: var(--radius);
-  transition: background 0.1s ease, opacity 0.15s ease, border-color 0.1s ease, transform 0.15s ease;
+  transition: background 0.1s ease, opacity 0.15s ease, border-color 0.1s ease;
   border: 2px solid transparent;
   cursor: default;
   min-height: 36px;
@@ -345,7 +351,6 @@ body {
 
 .task-item:hover {
   background: var(--forja-bg-surface);
-  transform: translateX(16px);
 }
 
 /* Drag handle */
@@ -362,7 +367,7 @@ body {
   transition: opacity 0.1s ease, color 0.1s ease;
   color: var(--forja-text-sub);
   position: absolute;
-  left: -16px;
+  left: 4px;
   top: 5px;
 }
 
