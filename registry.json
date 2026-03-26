@@ -5,7 +5,7 @@
       "name": "forja-plugin-clock",
       "displayName": "Clock",
       "description": "A customizable clock with multiple visual themes: flip clock, digital, and minimal.",
-      "version": "1.0.12",
+      "version": "1.1.0",
       "author": "Forja Team",
       "icon": "Clock",
       "tags": [
@@ -18,14 +18,14 @@
       "permissions": [
         "theme.current"
       ],
-      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-clock-v1.0.12/forja-plugin-clock-1.0.12.tar.gz",
-      "sha256": "1f9493b6c9c60cc89da5e2d99b2bd19700d85e800dfc6cdcfddb997360db897a"
+      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-clock-v1.1.0/forja-plugin-clock-1.1.0.tar.gz",
+      "sha256": "eae4ad244f6fa4cc1647d2d0d72b51ff38c96267fc92d02961e520443600c6e0"
     },
     {
       "name": "forja-plugin-pomodoro",
       "displayName": "Pomodoro Timer",
       "description": "A Pomodoro timer to track your focus sessions while coding.",
-      "version": "1.0.12",
+      "version": "1.1.0",
       "author": "Forja Team",
       "icon": "Timer",
       "tags": [
@@ -38,14 +38,14 @@
         "theme.current",
         "notifications"
       ],
-      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-pomodoro-v1.0.12/forja-plugin-pomodoro-1.0.12.tar.gz",
-      "sha256": "3ad462238624b15b0088d03bb7a2e145f359628ec5241194ca3fe28200882a14"
+      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-pomodoro-v1.1.0/forja-plugin-pomodoro-1.1.0.tar.gz",
+      "sha256": "2ea844b951a140d9597ca178817886d6314e9678a578d46dc1ea047e2041b0f5"
     },
     {
       "name": "forja-plugin-tasks",
       "displayName": "Markdown Tasks",
       "description": "Manage project tasks from a TASKS.md file. Each project has its own task list.",
-      "version": "1.0.12",
+      "version": "1.1.0",
       "author": "Forja Team",
       "icon": "ListTodo",
       "tags": [
@@ -60,8 +60,8 @@
         "fs.read",
         "fs.write"
       ],
-      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-tasks-v1.0.12/forja-plugin-tasks-1.0.12.tar.gz",
-      "sha256": "973093b5d7737bd83a6c88bd5da1da71cd208a3e7c833d1923d10f0a54223cd1"
+      "downloadUrl": "https://github.com/nandomoreirame/forja-plugins/releases/download/forja-plugin-tasks-v1.1.0/forja-plugin-tasks-1.1.0.tar.gz",
+      "sha256": "c9f67233a006288136c978c8e5ac871ea29503b5df3bc1852acd30a4fa53f211"
     }
   ]
 }
