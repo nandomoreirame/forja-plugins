@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clock</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- CONTENT: Clock display (centered) -->
+    <main class="plugin-content">
+      <!-- Theme: flip (default) -->
+      <div id="clock-flip" class="clock-view clock-flip">
+        <div class="clock-container">
+          <!-- Hours -->
+          <div class="flip-group">
+            <div class="flip-card" id="flip-h1" data-value="0">
+              <div class="flip-top"><span class="digit">0</span></div>
+              <div class="flip-bottom"><span class="digit">0</span></div>
+            </div>
+            <div class="flip-card" id="flip-h2" data-value="0">
+              <div class="flip-top"><span class="digit">0</span></div>
+              <div class="flip-bottom"><span class="digit">0</span></div>
+            </div>
+          </div>
+
+          <span class="colon">:</span>
+
+          <!-- Minutes -->
+          <div class="flip-group">
+            <div class="flip-card" id="flip-m1" data-value="0">
+              <div class="flip-top"><span class="digit">0</span></div>
+              <div class="flip-bottom"><span class="digit">0</span></div>
+            </div>
+            <div class="flip-card" id="flip-m2" data-value="0">
+              <div class="flip-top"><span class="digit">0</span></div>
+              <div class="flip-bottom"><span class="digit">0</span></div>
+            </div>
+          </div>
+
+          <span class="colon colon-seconds">:</span>
+
+          <!-- Seconds -->
+          <div class="flip-group flip-group-seconds">
+            <div class="flip-card flip-card-sm" id="flip-s1" data-value="0">
+              <div class="flip-top"><span class="digit">0</span></div>
+              <div class="flip-bottom"><span class="digit">0</span></div>
+            </div>
+            <div class="flip-card flip-card-sm" id="flip-s2" data-value="0">
+              <div class="flip-top"><span class="digit">0</span></div>
+              <div class="flip-bottom"><span class="digit">0</span></div>
+            </div>
+          </div>
+        </div>
+        <span id="ampm-flip" class="ampm-label" hidden></span>
+      </div>
+
+      <!-- Theme: digital -->
+      <div id="clock-digital" class="clock-view clock-digital" hidden>
+        <span id="digital-time" class="digital-time">00:00:00</span>
+        <span id="ampm-digital" class="ampm-label" hidden></span>
+      </div>
+
+      <!-- Theme: minimal -->
+      <div id="clock-minimal" class="clock-view clock-minimal" hidden>
+        <span id="minimal-time" class="minimal-time">00:00</span>
+        <span id="ampm-minimal" class="ampm-label" hidden></span>
+      </div>
+    </main>
+
+    <!-- FOOTER: Settings -->
+    <footer class="plugin-footer">
+      <button id="btn-settings-toggle" class="settings-toggle" type="button" aria-expanded="false" aria-controls="config-panel">
+        <svg class="settings-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        Settings
+        <svg class="arrow-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="18 15 12 9 6 15"/>
+        </svg>
+      </button>
+
+      <section id="config-panel" class="config-section" hidden>
+        <!-- Theme selector -->
+        <div class="config-row">
+          <span class="config-label">Theme</span>
+          <div class="theme-toggle">
+            <button class="theme-btn active" data-theme="flip">Flip</button>
+            <button class="theme-btn" data-theme="digital">Digital</button>
+            <button class="theme-btn" data-theme="minimal">Minimal</button>
+          </div>
+        </div>
+
+        <!-- Font selector -->
+        <div class="config-row">
+          <span class="config-label">Font</span>
+          <div class="font-toggle">
+            <button class="font-btn active" data-font="bebas-neue">Bebas</button>
+            <button class="font-btn" data-font="orbitron">Orbitron</button>
+            <button class="font-btn" data-font="jetbrains-mono">JetBrains</button>
+            <button class="font-btn" data-font="inter">Inter</button>
+          </div>
+        </div>
+
+        <!-- Time format -->
+        <div class="config-row">
+          <span class="config-label">Time format</span>
+          <div class="format-toggle">
+            <button class="format-btn active" id="btn-24h" data-format="24h">24h</button>
+            <button class="format-btn" id="btn-12h" data-format="12h">12h</button>
+          </div>
+        </div>
+
+        <!-- Show seconds -->
+        <div class="config-row">
+          <span class="config-label">Show seconds</span>
+          <button class="toggle-switch" id="btn-show-seconds" aria-pressed="true">
+            <span class="toggle-knob"></span>
+          </button>
+        </div>
+      </section>
+    </footer>
+
+  </div>
+
+  <script type="module" src="./src/main.ts"></script>
+</body>
+</html>

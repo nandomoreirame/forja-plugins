@@ -1,0 +1,380 @@
+/* =============================================
+ * Forja Plugin: Clock
+ *
+ * MANDATORY: Plugins MUST use --forja-* CSS variables for all colors.
+ * Forja injects these variables automatically via the PluginHost.
+ * Do NOT define your own color variables or hardcode color values.
+ *
+ * Available variables:
+ *   --forja-bg-base, --forja-bg-surface,
+ *   --forja-bg-overlay, --forja-bg-highlight
+ *   --forja-text, --forja-text-sub, --forja-text-muted
+ *   --forja-accent, --forja-accent-hover, --forja-accent-subtle
+ *   --forja-success, --forja-warning, --forja-error, --forja-info
+ *   --forja-red, --forja-green, --forja-yellow, --forja-blue,
+ *   --forja-magenta, --forja-cyan
+ *   --forja-border, --forja-shadow
+ * ============================================= */
+
+:root {
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-full: 999px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: var(--forja-bg-base);
+  color: var(--forja-text);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow: hidden;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 12px 12px 16px;
+}
+
+/* ── Layout sections ── */
+
+.plugin-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 0;
+}
+
+.plugin-footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Font classes (applied to .clock-view via JS) ── */
+
+.font-bebas-neue .digit,
+.font-bebas-neue .digital-time,
+.font-bebas-neue .minimal-time { font-family: "Bebas Neue", "Arial Narrow", sans-serif; }
+
+.font-orbitron .digit,
+.font-orbitron .digital-time,
+.font-orbitron .minimal-time { font-family: "Orbitron", monospace; }
+
+.font-jetbrains-mono .digit,
+.font-jetbrains-mono .digital-time,
+.font-jetbrains-mono .minimal-time { font-family: "JetBrains Mono", monospace; }
+
+.font-inter .digit,
+.font-inter .digital-time,
+.font-inter .minimal-time { font-family: "Inter", system-ui, sans-serif; }
+
+/* ── Clock views ── */
+
+.clock-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.clock-view[hidden] {
+  display: none;
+}
+
+/* ── Flip theme (.clock-flip) ── */
+
+.clock-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.flip-group {
+  display: flex;
+  gap: 3px;
+}
+
+.flip-card {
+  width: clamp(40px, 11vw, 64px);
+  height: clamp(56px, 15vw, 88px);
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px var(--forja-shadow, color-mix(in srgb, var(--forja-bg-base) 80%, transparent));
+}
+
+.flip-card-sm {
+  width: clamp(30px, 8vw, 48px);
+  height: clamp(42px, 11vw, 66px);
+}
+
+.flip-top,
+.flip-bottom {
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  overflow: hidden;
+  background: var(--forja-bg-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flip-top {
+  top: 0;
+  border-bottom: 1px solid var(--forja-bg-base);
+  align-items: flex-end;
+  padding-bottom: 1px;
+}
+
+.flip-bottom {
+  bottom: 0;
+  align-items: flex-start;
+  padding-top: 1px;
+}
+
+.flip-top .digit {
+  transform: translateY(50%);
+}
+
+.flip-bottom .digit {
+  transform: translateY(-50%);
+}
+
+.digit {
+  font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+  font-size: clamp(40px, 11vw, 64px);
+  font-weight: 400;
+  color: var(--forja-text);
+  line-height: 1;
+  user-select: none;
+}
+
+.flip-card-sm .digit {
+  font-size: clamp(30px, 8vw, 48px);
+}
+
+/* Flip animation */
+.flip-card.flipping {
+  animation: cardFlip 300ms cubic-bezier(0.455, 0.030, 0.515, 0.955);
+}
+
+@keyframes cardFlip {
+  0% { transform: scaleY(1); }
+  50% { transform: scaleY(0.95); }
+  100% { transform: scaleY(1); }
+}
+
+/* Colon */
+.colon {
+  font-family: "Bebas Neue", "Arial Narrow", sans-serif;
+  font-size: clamp(32px, 9vw, 52px);
+  font-weight: 400;
+  color: var(--forja-text-muted);
+  line-height: 1;
+  animation: pulse 1s ease-in-out infinite;
+  user-select: none;
+  padding: 0 2px;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Hide seconds */
+.seconds-hidden .flip-group-seconds,
+.seconds-hidden .colon-seconds {
+  display: none;
+}
+
+/* ── Digital theme (.clock-digital) ── */
+
+.digital-time {
+  font-family: "Orbitron", monospace;
+  font-size: clamp(48px, 13vw, 80px);
+  font-weight: 700;
+  color: var(--forja-accent);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+  line-height: 1;
+  user-select: none;
+  text-shadow: 0 0 20px color-mix(in srgb, var(--forja-accent) 30%, transparent);
+}
+
+/* ── Minimal theme (.clock-minimal) ── */
+
+.minimal-time {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: clamp(48px, 13vw, 80px);
+  font-weight: 300;
+  color: var(--forja-text-sub);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -1px;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── AM/PM label ── */
+
+.ampm-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--forja-text-muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.ampm-label[hidden] {
+  display: none;
+}
+
+/* ── Settings toggle ── */
+
+.settings-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--forja-text-muted);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.settings-toggle:hover {
+  color: var(--forja-text-sub);
+}
+
+.settings-toggle .settings-icon,
+.settings-toggle .arrow-icon {
+  flex-shrink: 0;
+}
+
+.settings-toggle .arrow-icon {
+  transition: transform 0.2s ease;
+}
+
+.settings-toggle[aria-expanded="true"] .arrow-icon {
+  transform: rotate(180deg);
+}
+
+/* ── Config section ── */
+
+.config-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--forja-bg-overlay);
+}
+
+.config-section[hidden] {
+  display: none;
+}
+
+.config-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.config-label {
+  font-size: 11px;
+  color: var(--forja-text-sub);
+}
+
+/* ── Theme / Font / Format toggle buttons ── */
+
+.theme-toggle,
+.font-toggle,
+.format-toggle {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  background: var(--forja-bg-surface);
+  border-radius: var(--radius);
+}
+
+.theme-btn,
+.font-btn,
+.format-btn {
+  padding: 4px 8px;
+  border: none;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: var(--forja-text-muted);
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.theme-btn:hover,
+.font-btn:hover,
+.format-btn:hover {
+  color: var(--forja-text-sub);
+  background: var(--forja-bg-overlay);
+}
+
+.theme-btn.active,
+.font-btn.active,
+.format-btn.active {
+  background: var(--forja-accent);
+  color: var(--forja-bg-base);
+  font-weight: 600;
+}
+
+/* ── Toggle switch ── */
+
+.toggle-switch {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--forja-bg-overlay);
+  cursor: pointer;
+  transition: background 0.2s ease;
+  padding: 0;
+}
+
+.toggle-switch[aria-pressed="true"] {
+  background: var(--forja-accent);
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--forja-bg-base);
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+
+.toggle-switch[aria-pressed="true"] .toggle-knob {
+  transform: translateX(16px);
+}
