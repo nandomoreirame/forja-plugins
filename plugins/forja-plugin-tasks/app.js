@@ -45,6 +45,7 @@
   var taskListEl = document.getElementById("task-list");
   var addFormEl = document.getElementById("add-form");
   var newSectionNameInput = document.getElementById("new-section-name");
+  var pluginTitleEl = document.getElementById("plugin-title");
 
   // --- Markdown Parser ---
   function parseMarkdown(text) {
@@ -504,7 +505,6 @@
 
         var headerEl = document.createElement("div");
         headerEl.className = "section-header";
-        headerEl.draggable = true;
 
         // Section drag handle
         var sectionDragHandle = document.createElement("span");
@@ -512,12 +512,22 @@
         sectionDragHandle.setAttribute("aria-hidden", "true");
         sectionDragHandle.title = "Drag to reorder section";
 
-        // Wire up section drag from header
+        // Wire up section drag from handle only
         (function (sIdx) {
+          sectionDragHandle.addEventListener("mousedown", function () {
+            headerEl.draggable = true;
+          });
+          sectionDragHandle.addEventListener("mouseup", function () {
+            headerEl.draggable = false;
+          });
           headerEl.addEventListener("dragstart", function (e) {
+            if (!headerEl.draggable) { e.preventDefault(); return; }
             onSectionDragStart(e, sIdx);
           });
-          headerEl.addEventListener("dragend", onSectionDragEnd);
+          headerEl.addEventListener("dragend", function () {
+            headerEl.draggable = false;
+            onSectionDragEnd();
+          });
         })(si);
 
         var titleSpan = document.createElement("span");
@@ -681,20 +691,28 @@
   function createTaskEl(sectionIndex, taskIndex, task) {
     var el = document.createElement("div");
     el.className = "task-item" + (task.done ? " completed" : "");
-    el.draggable = true;
-
     // Drag handle
     var handle = document.createElement("span");
     handle.className = "drag-handle";
     handle.setAttribute("aria-hidden", "true");
     handle.title = "Drag to reorder";
 
-    // Drag events
+    // Drag: only initiate from handle
     (function (sIdx, tIdx) {
+      handle.addEventListener("mousedown", function () {
+        el.draggable = true;
+      });
+      handle.addEventListener("mouseup", function () {
+        el.draggable = false;
+      });
       el.addEventListener("dragstart", function (e) {
+        if (!el.draggable) { e.preventDefault(); return; }
         onTaskDragStart(e, sIdx, tIdx);
       });
-      el.addEventListener("dragend", onTaskDragEnd);
+      el.addEventListener("dragend", function (e) {
+        el.draggable = false;
+        onTaskDragEnd(e);
+      });
       el.addEventListener("dragover", onTaskDragOver);
       el.addEventListener("drop", function (e) {
         onTaskDrop(e, sIdx, tIdx);
@@ -953,6 +971,20 @@
       setTimeout(function () {
         reloadBtn.classList.remove("spinning");
       }, 500);
+    });
+  }
+
+  // --- Title click: open TASKS.md in Forja preview ---
+  if (pluginTitleEl) {
+    pluginTitleEl.addEventListener("click", function () {
+      if (typeof forja === "undefined" || !state.projectPath || !state.fileExists) return;
+      try {
+        if (forja.editor && forja.editor.open) {
+          forja.editor.open(FILENAME, { preview: true });
+        }
+      } catch (err) {
+        console.error("[Markdown Tasks] Failed to open preview:", err);
+      }
     });
   }
 
