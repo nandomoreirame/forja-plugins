@@ -1,6 +1,6 @@
 {
   "name": "forja-plugin-clock",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "displayName": "Clock",
   "description": "A customizable clock with multiple visual themes: flip clock, digital, and minimal.",
   "scope": "global",
