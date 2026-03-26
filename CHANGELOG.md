@@ -8,6 +8,18 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.0.11] - 2026-03-25
+
+### Added
+- Add flip clock plugin with analog and digital modes.
+
+### Changed
+- Remove sidebar badge time display.
+
+### Fixed
+- Fix drag-and-drop and add clickable title.
+---
+
 ## [1.0.10] - 2026-03-25
 
 ### Added
