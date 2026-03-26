@@ -8,6 +8,15 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
+## [1.0.12] - 2026-03-26
+
+### Added
+- Rewrite tasks plugin in TypeScript with Vite.
+- Rewrite pomodoro plugin in TypeScript with Vite.
+- Rewrite clock plugin in TypeScript with Vite.
+- Add shared plugin SDK package.
+---
+
 ## [1.0.11] - 2026-03-25
 
 ### Added
