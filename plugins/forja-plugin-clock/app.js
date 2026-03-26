@@ -52,8 +52,7 @@
     font: (savedConfig && savedConfig.font) || defaults.font,
     format: (savedConfig && savedConfig.format) || defaults.format,
     showSeconds: savedConfig ? (savedConfig.showSeconds !== false) : defaults.showSeconds,
-    currentDigits: { h1: "", h2: "", m1: "", m2: "", s1: "", s2: "" },
-    lastBadgeMinute: -1
+    currentDigits: { h1: "", h2: "", m1: "", m2: "", s1: "", s2: "" }
   };
 
   // --- DOM refs ---
@@ -114,8 +113,7 @@
       h1: hStr[0], h2: hStr[1],
       m1: mStr[0], m2: mStr[1],
       s1: sStr[0], s2: sStr[1],
-      ampm: ampm,
-      minutes: m
+      ampm: ampm
     };
   }
 
@@ -171,19 +169,6 @@
       }
     }
 
-    // Update sidebar badge (once per minute)
-    if (digits.minutes !== state.lastBadgeMinute) {
-      state.lastBadgeMinute = digits.minutes;
-      updateBadge(digits);
-    }
-  }
-
-  function updateBadge(digits) {
-    if (typeof forja === "undefined" || !forja.sidebar) return;
-    try {
-      var badge = digits.h1 + digits.h2 + ":" + digits.m1 + digits.m2;
-      forja.sidebar.setBadge(badge);
-    } catch (_) { /* ignore */ }
   }
 
   // --- Settings functions ---
