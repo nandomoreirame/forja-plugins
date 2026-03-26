@@ -14,7 +14,7 @@
 import { readdir, readFile, access } from "node:fs/promises";
 import { join } from "node:path";
 
-const PLUGINS_DIR = join(import.meta.dirname, "..", "plugins");
+const PLUGINS_DIR = join(import.meta.dirname, "..", "apps");
 const REQUIRED_FIELDS = ["name", "version", "displayName", "description", "entry"];
 const KEBAB_CASE_RE = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 const SEMVER_RE = /^\d+\.\d+\.\d+$/;

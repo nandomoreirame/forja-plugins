@@ -44,7 +44,7 @@
       <section class="stats-section">
         <div class="stat-row">
           <span class="stat-label">Pomodoros</span>
-          <span id="stat-pomodoros" class="stat-value">0 / <span id="session-target">8</span></span>
+          <span id="stat-pomodoros" class="stat-value">0 / <span id="session-target">4</span></span>
         </div>
         <div class="stat-row">
           <span class="stat-label">Finish At</span>
@@ -52,7 +52,7 @@
         </div>
         <div class="stat-row">
           <span class="stat-label">Total focus</span>
-          <span id="stat-total-focus" class="stat-value">0h 0m</span>
+          <span id="stat-total-focus" class="stat-value">0m</span>
         </div>
       </section>
 
@@ -74,7 +74,7 @@
           <span class="config-label">Pomodoros per session</span>
           <div class="config-counter">
             <button class="counter-btn" data-action="dec" data-target="session-pomodoros">-</button>
-            <span id="session-pomodoros-display" class="counter-value">8</span>
+            <span id="session-pomodoros-display" class="counter-value">4</span>
             <button class="counter-btn" data-action="inc" data-target="session-pomodoros">+</button>
           </div>
         </div>
@@ -107,6 +107,6 @@
 
   </div>
 
-  <script src="app.js"></script>
+  <script type="module" src="./src/main.ts"></script>
 </body>
 </html>

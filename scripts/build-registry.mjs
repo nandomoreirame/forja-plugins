@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
 /**
- * Build registry.json from plugin manifests in plugins/ directory.
+ * Build registry.json from plugin manifests.
  *
  * Usage: node scripts/build-registry.mjs
  *
- * Reads each plugin's manifest.json and produces a registry.json file
- * that can be served via GitHub Pages.
+ * Reads each plugin's manifest.json (preferring dist/ over source)
+ * and produces a registry.json file that can be served via GitHub Pages.
  */
 
 import { createHash } from "node:crypto";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
-const PLUGINS_DIR = join(import.meta.dirname, "..", "plugins");
+const PLUGINS_DIR = join(import.meta.dirname, "..", "apps");
 const DIST_DIR = join(import.meta.dirname, "..", "dist");
 const REGISTRY_PATH = join(import.meta.dirname, "..", "public", "registry.json");
 const GITHUB_REPO = "nandomoreirame/forja-plugins";
@@ -34,7 +34,16 @@ async function buildRegistry() {
   const plugins = [];
 
   for (const dir of pluginDirs) {
-    const manifestPath = join(PLUGINS_DIR, dir.name, "manifest.json");
+    // Prefer built manifest (has injected version) over source manifest
+    const distManifestPath = join(PLUGINS_DIR, dir.name, "dist", "manifest.json");
+    const srcManifestPath = join(PLUGINS_DIR, dir.name, "manifest.json");
+    let manifestPath;
+    try {
+      await readFile(distManifestPath);
+      manifestPath = distManifestPath;
+    } catch {
+      manifestPath = srcManifestPath;
+    }
     try {
       const raw = await readFile(manifestPath, "utf-8");
       const manifest = JSON.parse(raw);
