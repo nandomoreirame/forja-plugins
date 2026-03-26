@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Release plugins: bump version across package.json and all manifests,
-# package as tar.gz, create GitHub Releases, upload assets.
+# Release plugins: bump root version, build with Vite (injects version into manifests),
+# package dist/ as tar.gz, create GitHub Releases, upload assets.
 #
 # Usage:
 #   ./scripts/release-plugin.sh <version>          # e.g. 2.1.0
 #   ./scripts/release-plugin.sh <version> --dry-run # preview without releasing
 #
-# Requirements: gh CLI authenticated, jq
+# Requirements: gh CLI authenticated, jq, pnpm
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-PLUGINS_DIR="$ROOT_DIR/plugins"
+APPS_DIR="$ROOT_DIR/apps"
 DIST_DIR="$ROOT_DIR/dist"
 PACKAGE_JSON="$ROOT_DIR/package.json"
 DRY_RUN=false
@@ -29,29 +29,25 @@ validate_semver() {
 
 # --- Version sync ---
 
-bump_versions() {
+bump_root_version() {
   local new_version="$1"
   local current_version
 
   current_version=$(jq -r '.version' "$PACKAGE_JSON")
-  echo "==> Bumping version: $current_version -> $new_version"
-  echo ""
+  echo "==> Bumping root version: $current_version -> $new_version"
 
-  # Update package.json
   jq --arg v "$new_version" '.version = $v' "$PACKAGE_JSON" > "$PACKAGE_JSON.tmp"
   mv "$PACKAGE_JSON.tmp" "$PACKAGE_JSON"
   echo "    Updated: package.json"
+  echo ""
+}
 
-  # Update all plugin manifests
-  for dir in "$PLUGINS_DIR"/*/; do
-    local manifest="$dir/manifest.json"
-    if [[ -f "$manifest" ]]; then
-      jq --arg v "$new_version" '.version = $v' "$manifest" > "$manifest.tmp"
-      mv "$manifest.tmp" "$manifest"
-      echo "    Updated: $(basename "$dir")/manifest.json"
-    fi
-  done
+# --- Build ---
 
+build_plugins() {
+  echo "==> Building all plugins (version injected from root package.json)..."
+  cd "$ROOT_DIR"
+  pnpm run build
   echo ""
 }
 
@@ -60,8 +56,13 @@ bump_versions() {
 release_plugin() {
   local plugin_name="$1"
   local version="$2"
-  local plugin_dir="$PLUGINS_DIR/$plugin_name"
-  local manifest="$plugin_dir/manifest.json"
+  local plugin_dist="$APPS_DIR/$plugin_name/dist"
+  local manifest="$plugin_dist/manifest.json"
+
+  if [[ ! -f "$manifest" ]]; then
+    echo "    WARN: No built manifest for $plugin_name, skipping"
+    return
+  fi
 
   local name tag tarball
   name=$(jq -r '.name' "$manifest")
@@ -71,7 +72,7 @@ release_plugin() {
   echo "==> Packaging $name@$version"
   mkdir -p "$DIST_DIR"
 
-  tar -czf "$DIST_DIR/$tarball" -C "$PLUGINS_DIR" "$plugin_name"
+  tar -czf "$DIST_DIR/$tarball" -C "$plugin_dist" .
   echo "    Created: dist/$tarball ($(du -h "$DIST_DIR/$tarball" | cut -f1))"
 
   local sha256
@@ -109,9 +110,9 @@ if [[ $# -eq 0 ]]; then
   echo "Current version: $current"
   echo ""
   echo "Plugins:"
-  for dir in "$PLUGINS_DIR"/*/; do
+  for dir in "$APPS_DIR"/forja-plugin-*/; do
     if [[ -f "$dir/manifest.json" ]]; then
-      echo "  - $(jq -r '.name' "$dir/manifest.json")@$(jq -r '.version' "$dir/manifest.json")"
+      echo "  - $(jq -r '.name' "$dir/manifest.json")"
     fi
   done
   exit 1
@@ -126,15 +127,14 @@ if [[ "${2:-}" == "--dry-run" ]]; then
   echo ""
 fi
 
-bump_versions "$VERSION"
+bump_root_version "$VERSION"
+build_plugins
 
 echo "==> Releasing all plugins at v${VERSION}..."
 echo ""
 
-for dir in "$PLUGINS_DIR"/*/; do
-  if [[ -f "$dir/manifest.json" ]]; then
-    release_plugin "$(basename "$dir")" "$VERSION"
-  fi
+for dir in "$APPS_DIR"/forja-plugin-*/; do
+  release_plugin "$(basename "$dir")" "$VERSION"
 done
 
 if [[ "$DRY_RUN" == false ]]; then
