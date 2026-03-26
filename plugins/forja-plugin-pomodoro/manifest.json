@@ -1,6 +1,6 @@
 {
   "name": "forja-plugin-pomodoro",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "displayName": "Pomodoro Timer",
   "description": "A Pomodoro timer to track your focus sessions while coding.",
   "scope": "global",
