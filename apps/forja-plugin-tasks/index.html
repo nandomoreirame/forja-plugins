@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Markdown Tasks</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="plugin-header">
+      <div class="header-top">
+        <h2 class="plugin-title" id="plugin-title">TASKS.md</h2>
+        <div class="header-actions">
+          <div id="stats" class="stats-badge">
+            <div id="stats-progress" class="progress-bar"><div id="stats-progress-fill" class="progress-fill"></div></div>
+            <span id="stats-text"></span>
+          </div>
+          <button id="reload-btn" class="icon-btn" type="button" title="Reload TASKS.md" aria-label="Reload tasks" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+              <path d="M21 21v-5h-5"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <span id="project-name" class="plugin-subtitle">No project</span>
+    </header>
+
+    <div id="no-project-state" class="empty-state">
+      <p class="empty-icon">&#128194;</p>
+      <p class="empty-title">No project selected</p>
+      <p class="empty-description">Open a project to manage its tasks.</p>
+    </div>
+
+    <div id="no-file-state" class="empty-state" style="display:none">
+      <p class="empty-icon">&#128196;</p>
+      <p class="empty-title">No TASKS.md file</p>
+      <p class="empty-description">This project doesn't have a TASKS.md file yet.</p>
+      <button id="create-file-btn" class="btn btn-primary btn-create-file" type="button">Create TASKS.md file</button>
+    </div>
+
+    <div id="empty-state" class="empty-state" style="display:none">
+      <p class="empty-icon">&#9745;</p>
+      <p class="empty-title">No tasks yet</p>
+      <p class="empty-description">Add your first task below.</p>
+    </div>
+
+    <div id="loading-state" class="empty-state" style="display:none">
+      <p class="empty-title">Loading...</p>
+    </div>
+
+    <main id="task-list" class="task-list" style="display:none"></main>
+
+    <footer id="add-form" class="add-form" style="display:none">
+      <input type="text" id="new-section-name" class="input-field input-section-name" placeholder="New section name..." />
+    </footer>
+  </div>
+
+  <script type="module" src="./src/main.ts"></script>
+</body>
+</html>

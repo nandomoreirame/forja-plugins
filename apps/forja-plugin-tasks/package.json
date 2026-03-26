@@ -1,0 +1,14 @@
+{
+  "name": "forja-plugin-tasks",
+  "version": "1.0.11",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@forja/sdk": "workspace:*"
+  }
+}
